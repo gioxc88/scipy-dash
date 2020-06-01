@@ -32,26 +32,33 @@ def get_params_list(dist):
 @app.callback(Output('more_params', 'children'),
               [Input({'name': 'dist', 'type': 'input'}, 'value')])
 def update_params_list(dist):
+    if dist is None:
+        return
     params_name = get_params_list(dist)
 
     form = []
 
     for i, name in enumerate(params_name):
+        addon = dbc.InputGroupAddon(name, addon_type="prepend")
         label = dbc.Label(name, width=2)
-        input_ = dcc.Input(id={'name': name, 'type': 'input'}, type='number',
-                           placeholder='enter a value', step=0.1, debounce=True)
+        input_ = dbc.Input(id={'name': name, 'type': 'input'}, type='number',
+                           debounce=True)
+
+        input_.value = None
         if name == 'scale':
             input_.min = 0
 
-        elements = [label, dbc.Col(input_)]
-        if i + 1 == len(params_name):
-
-            elements.append(dbc.FormText('press enter to show the plot', color="secondary"))
+        elements = [label, dbc.Col(input_, width=8)]
         pair = dbc.FormGroup(elements, row=True)
         form.append(pair)
 
-    dbc.FormText('press enter to show the plot', color="secondary")
-    return dbc.Form(form)
+        # pair = dbc.InputGroup(elements, className="mb-1")
+        # elements = [addon, input_]
+        # form.append(dbc.Col(pair, width=11))
+
+    form.append(dbc.FormText('fill the form and press enter to show the plot', color="secondary"))
+
+    return html.Div(form)
 
 
 @app.callback(Output('doc_frame', 'src'),
@@ -113,11 +120,14 @@ def update_hidden_pdf_plot(*args):
         return children
 
     params = {key: value for key, value in zip(params_name, args[1:])}
+    if params['scale'] == 0:
+        return
+
 
     lower_bound, upper_bound = dist.ppf([lower_tail, upper_tail], **params)
 
-    x = np.linspace(lower_bound, upper_bound, 1000)
-    y = dist.pdf(x, **params)
+    x = np.linspace(lower_bound, upper_bound, 1000).round(4)
+    y = dist.pdf(x, **params).round(4)
 
     layout = go.Layout(template='plotly_white',
                        title=dict(text='Probability density function', x=0.5, xanchor='center'))
@@ -173,8 +183,12 @@ def update_hidden_cdf_plot(*args):
         return children, table_children
 
     params = {key: value for key, value in zip(params_name, args[1:])}
+    if params['scale'] == 0:
+        return None, None
+
     lower_bound, upper_bound = dist.ppf([lower_tail, upper_tail], **params)
     columns = ['name', 'mean', 'std', 'variance', 'skewness', 'kurtosis']
+
     name = ', '.join([f'{key}: {value}' for key, value in params.items()])
     name = f'{dist.name}, {name}'
 
@@ -190,9 +204,8 @@ def update_hidden_cdf_plot(*args):
         table_children.data.append(data)
         table = table_children
 
-
-    x = np.linspace(lower_bound, upper_bound, 1000)
-    y = dist.cdf(x, **params)
+    x = np.linspace(lower_bound, upper_bound, 1000).round(4)
+    y = dist.cdf(x, **params).round(4)
 
     layout = go.Layout(template='plotly_white',
                        title=dict(text='Cumulative distribution function', x=0.5, xanchor='center'))
@@ -208,3 +221,12 @@ def update_hidden_cdf_plot(*args):
         figure = go.Figure(data=[trace], layout=layout)
 
     return dcc.Graph(figure=figure), table
+
+
+@app.callback(Output('switch', 'style'),
+              [Input('plot', 'children')])
+def show_switch(plot):
+    if plot is None:
+        return {'display': 'none'}
+    else:
+        return {}
