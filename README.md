@@ -1,2 +1,6 @@
-# scipy-dash
-an interactive dash for visualization of statistical continuous distributions
+# ad-capital
+A dash app for visualizing distributions of `scipy.stats`.
+
+Hosted on https://adcapital.herokuapp.com/
+
+![](dash.gif)
