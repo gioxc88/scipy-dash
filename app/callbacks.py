@@ -41,7 +41,7 @@ def update_params_list(dist):
     for i, name in enumerate(params_name):
         addon = dbc.InputGroupAddon(name, addon_type="prepend")
         label = dbc.Label(name, width=2)
-        input_ = dbc.Input(id={'name': name, 'type': 'input'}, type='number',
+        input_ = dcc.Input(id={'name': name, 'type': 'input'}, type='number',
                            debounce=True)
 
         input_.value = None
