@@ -19,7 +19,9 @@ def dash_kwarg(inputs):
 
 def skewness(dist):
     try:
-        result = dist.moment(3) / dist.std() ** 3
+        result = (dist.moment(3) -
+                  3 * dist.moment(2) * dist.moment(1) +
+                  2 * dist.moment(1) ** 3) / dist.std() ** 3
     except:
         result = np.nan
     return result
@@ -27,7 +29,11 @@ def skewness(dist):
 
 def kurtosis(dist):
     try:
-        result = dist.moment(4) / dist.std() ** 4
+        result = (dist.moment(4) +
+                  dist.moment(1) ** 4 +
+                  6 * dist.moment(1) ** 2 * dist.moment(2) -
+                  4 * dist.moment(3) * dist.moment(1) -
+                  4 * dist.moment(1) ** 4) / dist.std() ** 4
     except:
         result = np.nan
     return result
