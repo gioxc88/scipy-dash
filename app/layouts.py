@@ -13,7 +13,7 @@ from . import app
 from . import config
 
 drop_down_options = [{'label': d, 'value': d} for d in dir(stats) if isinstance(getattr(stats, d), stats.rv_continuous)]
-dropdown = dcc.Dropdown(id={'name': 'dist', 'type': 'input'},
+dropdown = dcc.Dropdown(id='dist',
                         options=drop_down_options,
                         placeholder='select a distribution',
                         className='mt-3')
@@ -60,7 +60,7 @@ layout = \
                     html.Div(id='more_params', className="mt-1") @
                     dbc.Button("Plot", id='submit', color="primary", className="mt-3", style={'display': 'none'}) @
                     html.A(href='', target="_blank") /
-                Col(id='doc_col', width=dict(size=7,  offset=2)) *
+                Col(id='doc_col', width=dict(size=7,  offset=1)) *
                     html.Div(className='embed-responsive embed-responsive-16by9') *
                         html.Iframe(id='doc_frame', src='about:blank', className='embed-responsive-item', hidden=True) %
             Row(className="mt-3", justify='start') *
