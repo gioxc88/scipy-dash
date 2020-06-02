@@ -11,5 +11,5 @@ linkedin_png = images_path / 'linkedin.png'
 github_png = images_path / 'github.png'
 
 linkedin_url = 'https://www.linkedin.com/in/giovambattista-perciaccante-3104b8b1/'
-github_url ='https://github.com/gioxc88/ad-capital'
+github_url = 'https://github.com/gioxc88/scipy-dash'
 scipy_url = 'https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.'
